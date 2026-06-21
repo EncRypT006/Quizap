@@ -6,13 +6,19 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Button;
 import android.view.View;
 import android.view.KeyEvent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.content.Context;
 
 public class MainActivity extends Activity {
 
     private WebView webView;
     private ImageView splashLogo;
+    private View noInternetLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +27,7 @@ public class MainActivity extends Activity {
 
         webView = findViewById(R.id.webview);
         splashLogo = findViewById(R.id.splashLogo);
+        noInternetLayout = findViewById(R.id.noInternetLayout);
 
         webView.setBackgroundColor(0x00000000);
         webView.setVerticalScrollBarEnabled(false);
@@ -37,12 +44,44 @@ public class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 splashLogo.setVisibility(View.GONE);
                 webView.setVisibility(View.VISIBLE);
+                noInternetLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                splashLogo.setVisibility(View.GONE);
+                webView.setVisibility(View.GONE);
+                noInternetLayout.setVisibility(View.VISIBLE);
             }
         });
 
-        webView.setVisibility(View.GONE);
-        splashLogo.setVisibility(View.VISIBLE);
-        webView.loadUrl("https://quizapgame1.netlify.app/");
+        Button retryButton = findViewById(R.id.retryButton);
+        retryButton.setOnClickListener(v -> {
+            if (isConnected()) {
+                noInternetLayout.setVisibility(View.GONE);
+                splashLogo.setVisibility(View.VISIBLE);
+                webView.reload();
+            }
+        });
+
+        loadPage();
+    }
+
+    private void loadPage() {
+        if (isConnected()) {
+            webView.setVisibility(View.GONE);
+            splashLogo.setVisibility(View.VISIBLE);
+            webView.loadUrl("https://quizapgame1.netlify.app/");
+        } else {
+            splashLogo.setVisibility(View.GONE);
+            noInternetLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 
     @Override
