@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:icon="@android:drawable/sym_def_app_icon"
         android:label="Quiz App"
-        android:theme="@style/AppTheme"
+        android:theme="@android:style/Theme.NoTitleBar"
         android:usesCleartextTraffic="true">
 
         <activity
