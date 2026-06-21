@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.view.View;
+import android.view.KeyEvent;
+import android.view.WindowManager;
 
 public class MainActivity extends Activity {
 
@@ -17,17 +18,27 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        getWindow().setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
+        
         setContentView(R.layout.activity_main);
 
         webView = findViewById(R.id.webview);
         splashLogo = findViewById(R.id.splashLogo);
+
         webView.setBackgroundColor(0x00000000);
         webView.setVerticalScrollBarEnabled(false);
+
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
