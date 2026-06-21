@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
     private ImageView splashLogo;
     private View noInternetLayout;
     private SwipeRefreshLayout swipeRefresh;
-    private static final String BASE_HOST = "quizapgame.netlify.app";
+    private static final String BASE_HOST = "https://quizapgame.netlify.app/";
     private long lastBackPressTime = 0;
 
     @Override
