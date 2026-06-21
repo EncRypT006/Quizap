@@ -18,4 +18,28 @@
         android:src="@android:drawable/sym_def_app_icon"
         android:visibility="visible" />
 
+    <LinearLayout
+        android:id="@+id/noInternetLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="لا يوجد اتصال بالإنترنت"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:layout_marginBottom="20dp" />
+
+        <Button
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="إعادة المحاولة" />
+
+    </LinearLayout>
+
 </RelativeLayout>
