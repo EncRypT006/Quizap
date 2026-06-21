@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
         if (isConnected()) {
             webView.setVisibility(View.GONE);
             splashLogo.setVisibility(View.VISIBLE);
-            webView.loadUrl("https://quizapgame1.netlify.app/");
+            webView.loadUrl("https://quizapgame.netlify.app/");
         } else {
             splashLogo.setVisibility(View.GONE);
             noInternetLayout.setVisibility(View.VISIBLE);
