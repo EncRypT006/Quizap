@@ -8,12 +8,14 @@ import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import android.view.KeyEvent;
 import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.view.View;
 
 public class MainActivity extends Activity {
 
     private WebView webView;
     private ProgressBar progressBar;
+    private ImageView splashLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,19 +24,19 @@ public class MainActivity extends Activity {
 
         webView = findViewById(R.id.webview);
         progressBar = findViewById(R.id.progressBar);
+        splashLogo = findViewById(R.id.splashLogo);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
+            public void onPageFinished(WebView view, String url) {
+                splashLogo.setVisibility(View.GONE);
+                webView.setVisibility(View.VISIBLE);
             }
         });
 
@@ -44,12 +46,12 @@ public class MainActivity extends Activity {
                 progressBar.setProgress(newProgress);
                 if (newProgress == 100) {
                     progressBar.setVisibility(View.GONE);
-                } else {
-                    progressBar.setVisibility(View.VISIBLE);
                 }
             }
         });
 
+        webView.setVisibility(View.GONE);
+        splashLogo.setVisibility(View.VISIBLE);
         webView.loadUrl("https://quizapgame1.netlify.app/");
     }
 
