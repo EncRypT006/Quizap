@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
 
         webView = findViewById(R.id.webview);
         splashLogo = findViewById(R.id.splashLogo);
-
+        webView.setBackgroundColor(0x00000000);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
