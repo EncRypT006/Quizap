@@ -2,6 +2,7 @@ package com.quizapp.webview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebSettings;
@@ -9,6 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 import android.view.KeyEvent;
@@ -25,6 +27,8 @@ public class MainActivity extends Activity {
     private View noInternetLayout;
     private SwipeRefreshLayout swipeRefresh;
     private android.widget.ProgressBar splashProgress;
+    private TextView welcomeText;
+    private StarFieldView starField;
     private android.os.Handler progressHandler = new android.os.Handler();
     private int progressValue = 0;
     private static final String BASE_HOST = "quizapgame.netlify.app";
@@ -42,6 +46,8 @@ public class MainActivity extends Activity {
         noInternetLayout = findViewById(R.id.noInternetLayout);
         swipeRefresh = findViewById(R.id.swipeRefresh);
         splashProgress = findViewById(R.id.splashProgress);
+        welcomeText = findViewById(R.id.welcomeText);
+        starField = findViewById(R.id.starField);
 
         webView.setBackgroundColor(0x00000000);
         webView.setVerticalScrollBarEnabled(false);
@@ -74,7 +80,10 @@ public class MainActivity extends Activity {
                 new android.os.Handler().postDelayed(() -> {
                     splashLogo.setVisibility(View.GONE);
                     splashProgress.setVisibility(View.GONE);
+                    welcomeText.setVisibility(View.GONE);
                     progressHandler.removeCallbacksAndMessages(null);
+                    if (starField != null) starField.stopStars();
+                    starField.setVisibility(View.GONE);
                     webView.setVisibility(View.VISIBLE);
                     noInternetLayout.setVisibility(View.GONE);
                     swipeRefresh.setRefreshing(false);
@@ -84,6 +93,10 @@ public class MainActivity extends Activity {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 splashLogo.setVisibility(View.GONE);
+                splashProgress.setVisibility(View.GONE);
+                welcomeText.setVisibility(View.GONE);
+                if (starField != null) starField.stopStars();
+                starField.setVisibility(View.GONE);
                 webView.setVisibility(View.GONE);
                 noInternetLayout.setVisibility(View.VISIBLE);
                 swipeRefresh.setRefreshing(false);
@@ -117,12 +130,29 @@ public class MainActivity extends Activity {
             webView.setVisibility(View.GONE);
             splashLogo.setVisibility(View.VISIBLE);
             splashProgress.setVisibility(View.VISIBLE);
+            welcomeText.setVisibility(View.VISIBLE);
             splashProgress.setProgress(0);
             progressValue = 0;
 
-            // Fade in animation
+            // صوت عند فتح التطبيق
+            try {
+                MediaPlayer mp = MediaPlayer.create(this, R.raw.startup_sound);
+                if (mp != null) {
+                    mp.start();
+                    mp.setOnCompletionListener(MediaPlayer::release);
+                }
+            } catch (Exception e) {
+                // no sound file yet
+            }
+
+            // Fade in للوغو
             android.view.animation.Animation fadeIn = android.view.animation.AnimationUtils.loadAnimation(MainActivity.this, R.anim.fade_in);
             splashLogo.startAnimation(fadeIn);
+
+            // Fade in لرسالة الترحيب بعد ثانية
+            new android.os.Handler().postDelayed(() -> {
+                welcomeText.animate().alpha(1f).setDuration(800).start();
+            }, 1000);
 
             // Progress bar تعمر فـ 3 ثواني
             progressHandler.post(new Runnable() {
@@ -140,6 +170,7 @@ public class MainActivity extends Activity {
         } else {
             splashLogo.setVisibility(View.GONE);
             splashProgress.setVisibility(View.GONE);
+            welcomeText.setVisibility(View.GONE);
             noInternetLayout.setVisibility(View.VISIBLE);
         }
     }
