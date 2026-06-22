@@ -24,6 +24,9 @@ public class MainActivity extends Activity {
     private ImageView splashLogo;
     private View noInternetLayout;
     private SwipeRefreshLayout swipeRefresh;
+    private android.widget.ProgressBar splashProgress;
+    private android.os.Handler progressHandler = new android.os.Handler();
+    private int progressValue = 0;
     private static final String BASE_HOST = "quizapgame.netlify.app";
     private long lastBackPressTime = 0;
 
@@ -38,6 +41,7 @@ public class MainActivity extends Activity {
         splashLogo = findViewById(R.id.splashLogo);
         noInternetLayout = findViewById(R.id.noInternetLayout);
         swipeRefresh = findViewById(R.id.swipeRefresh);
+        splashProgress = findViewById(R.id.splashProgress);
 
         webView.setBackgroundColor(0x00000000);
         webView.setVerticalScrollBarEnabled(false);
@@ -69,6 +73,8 @@ public class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 new android.os.Handler().postDelayed(() -> {
                     splashLogo.setVisibility(View.GONE);
+                    splashProgress.setVisibility(View.GONE);
+                    progressHandler.removeCallbacksAndMessages(null);
                     webView.setVisibility(View.VISIBLE);
                     noInternetLayout.setVisibility(View.GONE);
                     swipeRefresh.setRefreshing(false);
@@ -110,9 +116,30 @@ public class MainActivity extends Activity {
         if (isConnected()) {
             webView.setVisibility(View.GONE);
             splashLogo.setVisibility(View.VISIBLE);
+            splashProgress.setVisibility(View.VISIBLE);
+            splashProgress.setProgress(0);
+            progressValue = 0;
+
+            // Fade in animation
+            android.view.animation.Animation fadeIn = android.view.animation.AnimationUtils.loadAnimation(MainActivity.this, R.anim.fade_in);
+            splashLogo.startAnimation(fadeIn);
+
+            // Progress bar تعمر فـ 3 ثواني
+            progressHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (progressValue < 100) {
+                        progressValue += 1;
+                        splashProgress.setProgress(progressValue);
+                        progressHandler.postDelayed(this, 30);
+                    }
+                }
+            });
+
             webView.loadUrl("https://quizapgame.netlify.app/");
         } else {
             splashLogo.setVisibility(View.GONE);
+            splashProgress.setVisibility(View.GONE);
             noInternetLayout.setVisibility(View.VISIBLE);
         }
     }
