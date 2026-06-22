@@ -67,10 +67,12 @@ public class MainActivity extends Activity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                splashLogo.setVisibility(View.GONE);
-                webView.setVisibility(View.VISIBLE);
-                noInternetLayout.setVisibility(View.GONE);
-                swipeRefresh.setRefreshing(false);
+                new android.os.Handler().postDelayed(() -> {
+                    splashLogo.setVisibility(View.GONE);
+                    webView.setVisibility(View.VISIBLE);
+                    noInternetLayout.setVisibility(View.GONE);
+                    swipeRefresh.setRefreshing(false);
+                }, 3000);
             }
 
             @Override
