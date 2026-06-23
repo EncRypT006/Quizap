@@ -120,8 +120,9 @@ public class MainActivity extends Activity {
         retryButton.setOnClickListener(v -> {
             if (isConnected()) {
                 noInternetLayout.setVisibility(View.GONE);
-                splashLogo.setVisibility(View.VISIBLE);
-                webView.reload();
+                starField.setVisibility(View.VISIBLE);
+                progressValue = 0;
+                loadPage();
             }
         });
 
